@@ -73,4 +73,176 @@
 
 ---
 
-## Maun
+## MountainCar
+
+![image](https://github.com/nkmin0/2024_RL/assets/162765658/e32a74aa-8b6c-4c55-968d-934ee906869a)
+
+언덕 아래에 있는 수례를 언덕 위 깃발에 도달시켜야 한다. 
+
+- 왼쪽으로 가는 페달을 밟는다.
+- 가만히 있는다.
+- 오른쪽으로 가는 패달을 밟는다.
+
+단순히 오른쪽으로만 갔을 때에는 속력이 부족하여 언덕을 올라가지 못한다.
+위와같은 행동을 할 수 있을 때 깃발에 도달시켜야 하는 방법을 찾아야 한다.
+
+### 정책 정의하기
+
+```python
+class RandomPolicy():
+  # 클래스 선언
+    def __init__(self, action_space):
+      # 행동공간에 대한 정보 저장
+        self.action_space = action_space
+
+    # 클래스를 호출할 수 있도록 해주는 함수
+    def __call__(self, state):
+      # 상태를 받았을 때
+      # 랜덤하게 action을 하도록
+        return self.action_space.sample()
+```
+
+강화학습에서 정책은 환경이 변화할 때 인공지능이 어떻게 행동할 지를 결정하는 것으로 이 코드를 수정해서 목표에 쉽게 도달할 수 있도록 한다.
+
+```python
+class MyPolicy():
+  def __init__(self, action_space):
+    self.action_space = action_space
+
+  def __call__(self, state):
+    x, v = state
+    next_action = 2
+
+    if v>0:
+      next_action = 2
+    elif v<0:
+      next_action = 0
+    else:
+      next_action = 1
+
+    return next_action
+```
+
+위는 내가 MountainCar 문제를 해결하기 위해 짠 정책이다. 속도와 같은방향으로 페달을 밟도록 하여 좌우를 이동하면서 가속을 받아 깃발에 도달할 수 있도록 하였다.
+
+---
+
+## BlackJack
+
+![image](https://github.com/nkmin0/2024_RL/assets/162765658/e7d7c0ca-fe38-41a7-95f1-84ba0d41229c)
+
+블랙잭은 자신의 카드의 합이 21을 넘지 않으면서 21에 더 가까운 사람이 이기는 게임이다.
+
+- Jack, Queen, King 카드는 모두 10으로 계산한다.
+- Ace는 1 또는 11중 원하는 숫자로 계산할 수 있다.
+- 나머지 숫자 카드(2~9)는 그 숫자 그대로 계산한다.
+
+블랙잭에서 카드에는 위와같은 규칙이 적용된다.
+
+이때 내가 할 수 있는 행동은 두가지가 있다.
+
+- Hit
+  Hit를 선택할 시 자신의 카드를 한장 추가한다. 만약 자신의 카드의 합이 21이 넘어가면 패배(Bust)한다.
+- Stick
+  Stick을 선택할 시 딜러에 차례로 넘어간다.
+
+딜러는 무조건 아래의 규칙을 따른다.
+
+- 게임을 시작할 때 딜러는 카드 두장을 각각 앞면, 뒷면으로 놓는다.
+- 모든 플레이어의 플레이가 끝나면(Stick) 뒷면으로 덮어둔 카드를 오픈한다.
+- 만약 딜러의 카드의 총합이 17 이상이면 멈추고 16 이하이면 카드를 더 받는다.
+- 만약 딜러의 카드가 21이 넘어가면(Bust) 21이 넘지 않은 플레이어는 이긴다.
+- 딜러의 카드가 21이 넘어가지 않으면(not Bust) 21에 더 가까운 사람이 이기게 된다.
+
+블랙잭에서 상태는 (자신의 카드의 총합, 딜러의 오픈된 카드, 자신의 사용가능한 Ace의 존재여부)로 들어온다. 블랙잭에서 이기기 위해서는 자신의 카드의 총합이 N일 때 Hit를 하는것이 이득인지 Stick을 하는것이 이득인지를 아는것이 중요하다 생각한다.
+
+```python
+p=[[1, 2] for _ in range(23)]
+
+class MyPolicy():
+  def __init__(self, action_space):
+    self.action_space = action_space
+    #self.p = [[1, 1] for _ in range(23)]
+  def __call__(self, state):
+    cur, D, a = state
+    q=random.random()
+    if cur>=21:
+      return 0
+    if q < p[cur][0] / p[cur][1]:
+      return 1
+    else:
+      return 0
+```
+
+따라서 위와 같이 확률 배열 p를 선언하여 p의 확률로 Hit를 하고 1-p의 확률로 Stick을 하도록 한다.
+
+```python
+env = gym.make('Blackjack-v1')
+
+state, _ = env.reset()
+
+win=0
+draw=0
+lose=2
+
+bust=1
+low=1
+```
+
+```
+for i in range(100000):
+
+  done = False
+  reward = 0
+  while not done:
+      state, _ = env.reset()
+
+      agent = MyPolicy(env.action_space)
+      action = agent(state)
+
+      pre_state = state
+      pre_my, _, __ = pre_state
+      state, reward, done, _, info = env.step(action)
+
+      if action==1:
+        p[pre_my][1]+=hit
+        if reward!=-1:
+          p[pre_my][0]+=hit
+
+      elif action==0 and pre_my<=21:
+        if reward!=0:
+          p[pre_my][1]+=stop
+          if reward==-1:
+            p[pre_my][0]+=stop
+          elif reward==1 and p[pre_my][0]>1:
+            p[pre_my][0]-=stop
+
+
+
+  if reward == 1.0:
+    win+=1
+  elif reward == -1.0:
+    lose+=1
+    bust+=action
+    low=lose-bust
+  else:
+    draw+=1
+
+  hit = low/(bust+low)
+  stop = bust/(bust+low)
+
+print("win : ", round(win/(win+draw+lose) *100,2), "%",sep='')
+print("draw : ", round(draw/(win+draw+lose) *100,2), "%",sep='')
+print("lose : ", round(lose/(win+draw+lose) *100,2), "%",sep='')
+print()
+print("bust : ", bust-1)
+print("low : ", low-1)
+
+env.close()
+```
+
+현재 상태가 N일 때 Hit를 했는데 21을 넘지 않으면(not Bust) p을 올려준다.
+
+반대로 Stick을 하였을 때 승리로 게임이 끝나면 p를 낮추고(1-p를 올리고) 패배로 게임이 끝나면 Stick을 하는 확률을 낮추기 위해 P를 올려준다.
+
+위 방법을 통해 약 39%의 승률이 나왔다.
