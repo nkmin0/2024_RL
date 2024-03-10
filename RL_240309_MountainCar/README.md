@@ -231,12 +231,16 @@ for i in range(100000):
   hit = low/(bust+low)
   stop = bust/(bust+low)
 
+lose-=2
+bust-=1
+low-=1
+
 print("win : ", round(win/(win+draw+lose) *100,2), "%",sep='')
 print("draw : ", round(draw/(win+draw+lose) *100,2), "%",sep='')
 print("lose : ", round(lose/(win+draw+lose) *100,2), "%",sep='')
 print()
-print("bust : ", bust-1)
-print("low : ", low-1)
+print("bust : ", bust)
+print("low : ", low)
 
 env.close()
 ```
