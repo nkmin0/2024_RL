@@ -189,7 +189,7 @@ bust=1
 low=1
 ```
 
-```
+```python
 for i in range(100000):
 
   done = False
