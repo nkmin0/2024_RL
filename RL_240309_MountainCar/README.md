@@ -1,6 +1,8 @@
 # 2024.03.09
 
--[머신러닝](머신러닝)
+-[머신러닝](#머신러닝)
+-[Mountain Car](#MountainCar)
+-[BlackJack](#BlackJack)
 
 ## 머신러닝
 
