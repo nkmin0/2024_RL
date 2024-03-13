@@ -137,7 +137,7 @@ class MyPolicy():
 
 ![image](https://github.com/nkmin0/2024_RL/assets/162765658/e7d7c0ca-fe38-41a7-95f1-84ba0d41229c)
 
-### 블랙잭 규칙칙
+### 블랙잭 규칙
 
 블랙잭은 자신의 카드의 합이 21을 넘지 않으면서 21에 더 가까운 사람이 이기는 게임이다.
 
