@@ -132,7 +132,7 @@ def update_Q(self, state, action, next_state, reward):
 ```
 ### Q Update
 
-$$ Q_{\pi}(s,a) = E_{\pi}[R_{t+1} + \gamma R_{t+2} + \gamma^{2} R_{t+3} + \codts | S_{T}=s, A_{t} = a]
+$$ Q_{\pi}(s,a) = E_{\pi}[R_{t+1} + \gamma R_{t+2} + \gamma^{2} R_{t+3} + \cdots | S_{T}=s, A_{t} = a] $$
 
 
 ```python
