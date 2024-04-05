@@ -76,23 +76,48 @@ class Mypolicy():
         self.env = env
         self.learning_rate = 0.1 # 학습률
         self.discount_factor = 0.9 # 할인율
-        self.exploration_rate = 1.0 # 탐험 확률
+        self.exploration_rate = 0.5  # 탐험 확률
         self.exploration_decay = 0.99 # 탐험 확률 조정
         self.min_exploration_rate = 0.01 # 최소 탐험 확률
         self.Q = {}
-
+        self.rewards = []
+        self.choose_what = [[0,0,0],[0,0,0],[0,0,0]]
+        self.x=0
         self.state = self.env.reset()
+
+
+        self.Q[(0, 0)] = 0.0
+        self.Q[(0, 1)] = 0.0
+        self.Q[(1, 0)] = 0.0
+        self.Q[(1, 1)] = 0.0
+        self.Q[(2, 0)] = 0.0
+        self.Q[(2, 1)] = 0.0
+        self.Q[(2, 2)] = 0.0
+
 ```
 
 ```python
 def choose_action(self):
-    if random.uniform(0, 1) < self.exploration_rate * 0.5: 
-        return self.env.action_space.sample()  # 탐험
-    else:
-        if self.state in self.Q:
-            return max(self.Q[self.state], key=self.Q[self.state].get)  # 그리디
+    if self.state == 3: # state가 3일 때는 의미 없음
+        return 0
+    elif random.uniform(0, 1) < self.exploration_rate: # 일정 확률로 탐험
+        if self.state < 2:
+            return random.randint(0, 1)
         else:
-            return self.env.action_space.sample()  # 경험하지 않은 상태라면 탐험
+            return self.env.action_space.sample()  # 탐험
+    else: # 그리디
+        if self.state < 2:
+            if self.Q[(self.state,0)]>=self.Q[(self.state,1)]:
+                return 0
+            else:
+                return 1
+        else:
+            if self.Q[(self.state,1)]>=self.Q[(self.state,0)] and self.Q[(self.state,1)]>=self.Q[(self.state,2)]:
+                return 1
+            elif self.Q[(self.state,0)]>=self.Q[(self.state,1)] and self.Q[(self.state,0)]>=self.Q[(self.state,2)]:
+                return 0
+            else:
+                return 2
 ```
 
 ```python
@@ -107,7 +132,7 @@ def update_Q(self, state, action, next_state, reward):
 ```
 
 ```python
-def train(self, training_steps=500000):
+def train(self, training_steps=100):
     for i in range(training_steps):
         self.state = self.env.reset()
         done = False
@@ -115,7 +140,9 @@ def train(self, training_steps=500000):
 
         while not done:
             action = self.choose_action()
-            next_state, reward, done, _ = self.env.step(self.state, action)
+            if self.state != 3:
+                self.choose_what[self.state][action]+=1
+            next_state, reward, done, _ = self.env.step(action)
             total_reward += reward
 
             self.update_Q(self.state, action, next_state, reward)
@@ -128,26 +155,12 @@ def train(self, training_steps=500000):
         # 학습률 업데이트
         self.exploration_rate = max(self.min_exploration_rate, self.exploration_rate * self.exploration_decay)
 
-        if i%50000 == 0:
+        self.rewards.append(total_reward)
+
+        if i%10 == 0:
             print("i:", i, "Total Reward:", total_reward)
 
     print("Training finished.")
-```
-
-```python
-def test(self):
-    self.state = self.env.reset()
-    done = False
-    total_reward = 0
-
-    while not done:
-        action = self.choose_action()
-        print(self.state,action)
-        next_state, reward, done, _ = self.env.step(self.state, action)
-        total_reward += reward
-        self.state = next_state
-
-    print("Test Total Reward:", total_reward)
 ```
 
 ```python
@@ -155,27 +168,6 @@ env = MyEnv()
 
 agent = Mypolicy(env)
 agent.train()
-
-agent.test()
 ```
 
-```
-# 출력
-i: 0 Total Reward: -4
-i: 50000 Total Reward: -6
-i: 100000 Total Reward: -6
-i: 150000 Total Reward: 1
-i: 200000 Total Reward: 2
-i: 250000 Total Reward: -6
-i: 300000 Total Reward: -5
-i: 350000 Total Reward: -4
-i: 400000 Total Reward: -2
-i: 450000 Total Reward: -1
-Training finished.
-0 0
-0 1
-1 2
-2 1
-3 2
-Test Total Reward: 0
-```
+
