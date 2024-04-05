@@ -123,13 +123,17 @@ def choose_action(self):
 ```python
 def update_Q(self, state, action, next_state, reward):
     current_q_value = self.Q.get((state, action), 0)
-    max_future_q_value = max(self.Q.get((next_state, a), 0) for a in             range(self.env.action_space.n))
+    max_future_q_value = max(self.Q.get((next_state, a), 0) for a in range(self.env.action_space.n))
     # 가장 가치가 높은 것을 찾음
     new_q_value = (1 - self.learning_rate) * current_q_value + self.learning_rate * (reward + self.discount_factor * max_future_q_value)
     # 값 업데이트
 
     self.Q[(state, action)] = new_q_value
 ```
+### Q Update
+
+$$ Q_{\pi}(s,a) = E_{\pi}[R_{t+1} + \gamma R_{t+2} + \gamma^{2} R_{t+3} + \codts | S_{T}=s, A_{t} = a]
+
 
 ```python
 def train(self, training_steps=100):
