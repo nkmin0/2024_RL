@@ -134,6 +134,13 @@ def update_Q(self, state, action, next_state, reward):
 
 $$ Q_{\pi}(s,a) = E_{\pi}[R_{t+1} + \gamma R_{t+2} + \gamma^{2} R_{t+3} + \cdots | S_{T}=s, A_{t} = a] $$
 
+어떤 State(S)에서 어떤 Action(A)를 했을 때 그 행동의 가치를 계산한다. 이를 행동 가치 함수라고도 부르고 discount factor($\gamma$)를 사용하여 특정 action을 하였을 때 reward의 총합의 예측값을 구한다.
+
+discount factor($\gamma$)는 현재 얻는 보상이 미래에 얻는 보상보다 얼마나 더 중요한지를 나타내는 값이다.
+
+현재 상태로 부터 $t$초가 흐른 후에 얻는 보상은 $\gamma^{t}$ 만큼 할인 되어 계산 한다. 따라서 이를 정리하면 
+
+![image](https://github.com/nkmin0/2024_RL/assets/162765658/3402ad4a-2b10-46e1-b93e-f5dafe7f77c9)
 
 ```python
 def train(self, training_steps=100):
@@ -174,4 +181,19 @@ agent = Mypolicy(env)
 agent.train()
 ```
 
+## 학습 결과
+
+![image](https://github.com/nkmin0/2024_RL/assets/162765658/11fcf901-e00a-4cac-99d9-c9223a47fcba)
+
+학습 결과 딴짓 땡땡이같이 공부하는 것 보다 보상적인 측면에서 이득을 볼 수 있지만 확률이 낮다. 그래서
+
+공부 --> 공부 --> 벼락치기 를 하면서 r=1인 경우가 가장 많이 나왔다.
+
+![image](https://github.com/nkmin0/2024_RL/assets/162765658/8a0f067a-a0eb-40d2-9bb8-ca35f6982d0f)
+![image](https://github.com/nkmin0/2024_RL/assets/162765658/f288953c-fdf9-4fc1-8acd-11598a31ee82)
+![image](https://github.com/nkmin0/2024_RL/assets/162765658/54f24842-3762-4a19-92c5-7b57bbc8b113)
+
+![image](https://github.com/nkmin0/2024_RL/assets/162765658/e63485ab-57da-4897-abf1-07541b7a1872)
+
+위 차트를 보면 상태가 0,1 일 때초반에는 딴짓, 땡땡이를 하지만 나중 갈수록 공부만 선택하는 것을 볼 수 있다.
 
