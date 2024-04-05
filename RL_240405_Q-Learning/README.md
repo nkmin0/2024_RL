@@ -17,52 +17,55 @@ class MyEnv(gym.Env): #환경
 
 
     def reset(self):
-        state = 0
-        return state
+        self.state = 0
+        return self.state
 
-    def step(self, state, action):
-        q=random.random()
-        next_state = state
+    def step(self, action):
+        q = random.random()
+        next_state = self.state
         reward = 0
         done = False
 
-        if state == 0: # 수업
-            if action == 0: # 땡땡이
-                if q<0.2:
-                    next_state = state + 1
+        if self.state == 0: # 수업
+            if action == 0: #딴짓
+                if q < 0.2:
+                    next_state = self.state + 1
                 reward = -1
             else: # 공부
-                next_state = state + 1
+                next_state = self.state + 1
                 reward = -2
 
-        elif state == 1: # 야자
-            if action == 0: # 딴짓
-                if q<0.9:
-                    next_state = state - 1
+        elif self.state == 1: # 야자
+            if action == 0: # 떙땡이
+                if q < 0.9:
+                    next_state = self.state - 1
                 else:
-                    next_state = state + 1
+                    next_state = self.state + 1
                 reward = 1
             else: # 공부
-                next_state = state + 1
+                next_state = self.state + 1
                 reward = -2
 
-        elif state == 2: # 집
+        elif self.state == 2: # 집
             if action == 0: # 유튜브
                 reward = -1
             elif action == 1: # 벼락치기
                 reward = 5
-                next_state = state + 1
+                next_state = self.state + 1
             else: # 잠
-                next_state = state + 1
+                next_state = self.state + 1
 
-        elif state == 3: # 시험 결과 나옴
-            done=True
+        elif self.state == 3: # 시험 결과 나옴
+            done = True
 
         else:
-            done=True
+            done = True
             #print("error")
 
+        self.state = next_state  # 다음 상태로 업데이트
+
         return next_state, reward, done, {}
+
 ```
 
 ## 정책 적용 및 학습
@@ -83,7 +86,7 @@ class Mypolicy():
 
 ```python
 def choose_action(self):
-    if random.uniform(0, 1) < self.exploration_rate * 0.5:  # 탐험 확률 높임
+    if random.uniform(0, 1) < self.exploration_rate * 0.5: 
         return self.env.action_space.sample()  # 탐험
     else:
         if self.state in self.Q:
@@ -157,6 +160,7 @@ agent.test()
 ```
 
 ```
+# 출력
 i: 0 Total Reward: -4
 i: 50000 Total Reward: -6
 i: 100000 Total Reward: -6
