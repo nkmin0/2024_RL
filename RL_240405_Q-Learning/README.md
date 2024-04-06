@@ -76,9 +76,9 @@ class Mypolicy():
         self.env = env
         self.learning_rate = 0.1 # 학습률
         self.discount_factor = 0.9 # 할인율
-        self.exploration_rate = 0.5  # 탐험 확률
-        self.exploration_decay = 0.99 # 탐험 확률 조정
-        self.min_exploration_rate = 0.01 # 최소 탐험 확률
+        self.exploration_rate = 0.5  # 탐색 확률
+        self.exploration_decay = 0.99 # 탐색 확률 조정
+        self.min_exploration_rate = 0.01 # 최소 탐색 확률
         self.Q = {}
         self.rewards = []
         self.choose_what = [[0,0,0],[0,0,0],[0,0,0]]
@@ -100,11 +100,11 @@ class Mypolicy():
 def choose_action(self):
     if self.state == 3: # state가 3일 때는 의미 없음
         return 0
-    elif random.uniform(0, 1) < self.exploration_rate: # 일정 확률로 탐험
+    elif random.uniform(0, 1) < self.exploration_rate: # 일정 확률로 탐색
         if self.state < 2:
             return random.randint(0, 1)
         else:
-            return self.env.action_space.sample()  # 탐험
+            return self.env.action_space.sample()  # 탐색
     else: # 그리디
         if self.state < 2:
             if self.Q[(self.state,0)]>=self.Q[(self.state,1)]:
