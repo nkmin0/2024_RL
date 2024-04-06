@@ -13,5 +13,9 @@
 - 낙관주의적 탐색
 - $\epsilon$-greedy 알고리즘
 
-## [2.1차시](https://github.com/nkmin0/2024_RL/tree/main/RL_240405_Q-Learning) 2024.04.05
+### [2.1차시](https://github.com/nkmin0/2024_RL/tree/main/RL_240405_Q-Learning) 2024.04.05
+
+- 고등학생? 의 하루
+
+
 
