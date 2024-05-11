@@ -23,4 +23,4 @@
 
 ## 4차시 2024.04.07
 
-## [5차시](https://github.com/nkmin0/2024_RL/tree/main/RL_2405011_NeuralNetwork) 2024.05.11
+## [5차시](https://github.com/nkmin0/2024_RL/tree/main/RL_240511_NeuralNetwork) 2024.05.11
