@@ -19,4 +19,8 @@
 
 ## [3차시](https://github.com/nkmin0/2024_RL/tree/main/RL_240406_MakeEnvironment) 2024.04.06
 
+- 강화학습 환경을 만들 때 고민해야 하는 것
 
+## 4차시 2024.04.07
+
+## [5차시](https://github.com/nkmin0/2024_RL/tree/main/RL_2405011_NeuralNetwork) 2024.05.11
