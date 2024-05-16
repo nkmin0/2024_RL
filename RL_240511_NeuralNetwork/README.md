@@ -71,8 +71,6 @@ self.input_layer = nn.Linear(1,16)
 
 처럼 선형으로 코드를 짤 수 있다.
 
-또 layer를 만드는 과정은 아래와 같이도 짤 수 있다.
-
 ```python
 def forward(self, x):
     self.hidden_layers = [
@@ -81,6 +79,46 @@ def forward(self, x):
     ]
     return x
 ```
+
+또 layer를 만드는 과정은 위와 같이도 짤 수 있다.
+
+```python
+def forward(self, x):
+    x = self.input_layer(x)
+    x = self.activation(x)
+    x = self.hidden_layer(x)
+    x = self.activation(x)
+    x = self.output_layer(x)
+```
+
+???????
+
+```python
+network = NeuralNetwork()
+loss_function = nn.MSELoss() # 손실함수 선언
+
+optimizer = torch.optim.Adam(network.parameters(), lr=0.001)
+```
+
+Adam?
+
+```python
+optimizer.zero_grad()
+output = network(x)
+loss = loss_function(output,y)
+loss.backward()
+optimizer.step()
+```
+
+- optimizer.zero_grad() : 경사하강법 처음부터
+- output = network(x) : 레이어를 다라 진행한 결과
+- loss = loss_function(output,y) : 손실함수로 오차 계산
+- loss.backward() : 역전파
+- optimizer.step() : 경사하강법 한번 진행
+
+위 과정이 인공지능이 한번 학습하는 과정이며 원하는 횟수만큼 반복하여 학습을 진행하면 된다.
+
+
 
 
 
