@@ -93,6 +93,8 @@ def forward(self, x):
 
 ???????
 
+#### 딥러닝 진행행
+
 ```python
 network = NeuralNetwork()
 loss_function = nn.MSELoss() # 손실함수 선언
@@ -121,4 +123,37 @@ optimizer.step()
 
 
 
+```python
+from tqdm import tqdm
+import matplotlib.pyplot as plt
 
+# Define the network and the loss function.
+network = NeuralNetwork()
+loss_function = nn.MSELoss()
+optimizer = torch.optim.Adam(network.parameters(), lr=0.01)
+
+losses = []
+pbar = tqdm(range(100000), desc="Loss: --")
+for epoch in pbar:
+    x = torch.Tensor([torch.randn(1)])
+    y = x**3 + x**2 - x - 1
+    optimizer.zero_grad()
+    output = network(x)
+    loss = loss_function(output,y)
+    losses.append(loss.item())
+    loss.backward()
+    optimizer.step()
+    if epoch % 100 == 0:
+        pbar.set_description(f"Loss: {loss.item():.3f}")
+```
+위 코드는 $y=x^{3}+x^{2}-x-1$를 딥러닝으로 근사하는 코드이다.
+
+학습결과를 출력하여 보면 아래와 같다.
+
+![image](https://github.com/nkmin0/2024_RL/assets/162765658/8ed39c05-3963-42d8-acff-625313efcacc)
+
+그런데 그래프의 xlim을 바꾸어 보면
+
+![image](https://github.com/nkmin0/2024_RL/assets/162765658/7ca52239-c254-4d42-bb78-54300af2e3e8)
+
+위와같이 전체 범위에 대해서는 근사가 제대로 되어지지 않았다. 이는 지도학습의 단점으로 학습한 지역의 데이터에서는 높은 정확도를 보이지만 학습하지 않은 부분에 대해서는 근사하지 못한다는 것이다.
